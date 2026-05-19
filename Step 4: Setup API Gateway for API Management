@@ -1,0 +1,12 @@
+Setup API Gateway for API Management
+Steps to be Performed:
+
+1- Create a REST API in API Gateway
+2- Integrate Lambda with API Gateway using Lambda Proxy Integration
+3- Enable CORS
+4- Deploy the API
+5- Integrate API Gateway with React Application and Test
+
+#1 Create a REST API in API Gateway:
+
+Navigate to the API Gateway Console
