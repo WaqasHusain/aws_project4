@@ -1,0 +1,12 @@
+Create Lambda Function for Fetching Terms
+
+Steps to be Performed:
+
+1- Create an IAM Role for Lambda
+2- Prepare the Lambda code
+3- Test the Lambda Function
+
+#1 Create an IAM Role for Lambda
+Before creating a Lambda function, it's important to ensure that it has the necessary permissions to access DynamoDB, where your terms and definitions are stored.
+
+Go to the IAM console and select Roles.
