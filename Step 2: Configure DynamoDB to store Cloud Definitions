@@ -1,0 +1,25 @@
+STEPS TO BE PERFORMED:
+
+1- Create the DynamoDB Table
+2- Prepare the records to perform batch operation
+3- Upload the records using AWS CLI
+4- Verify the records in the table
+
+1# Create the DynamoDB Table:
+
+In this step, we will set up a DynamoDB table to store cloud-related definitions that our application will use.
+DynamoDB is a fully managed NoSQL database provided by AWS, designed to deliver fast and predictable performance.
+It is ideal for applications requiring high availability, scalability, and low latency, like our dictionary application.
+
+Log in to the AWS Management Console.
+In the search bar, type DynamoDB and select it from the list of services.
+Once on the DynamoDB dashboard, click Create Table.
+Table Name: Enter CloudDefinitions. This name will help identify our table in AWS.
+Primary Key: Define the partition key as term (Type: String).
+This key will uniquely identify each term in our dictionary, ensuring no duplicates.
+Leave other options as default (such as capacity mode set to "On-demand") and click Create Table.
+
+2# Prepare the records to perform Batch operation:
+
+In the /ztc-projects-intermediate/projects/intermediate/project4/records directory (Used in step 4.2), locate the records folder.
+It contains four JSON files: records-1.json, records-2.json, records-3.json, and records-4.json.
