@@ -23,3 +23,86 @@ Leave other options as default (such as capacity mode set to "On-demand") and cl
 
 In the /ztc-projects-intermediate/projects/intermediate/project4/records directory (Used in step 4.2), locate the records folder.
 It contains four JSON files: records-1.json, records-2.json, records-3.json, and records-4.json.
+
+Why Do We Have 4 Files?
+AWS DynamoDB's batch-write-item API allows you to insert, update, or delete up to 25 items in a single request.
+To handle more than 25 records, we split the data into smaller files (records-1.json, records-2.json, etc.), each containing no more than 25 records. This ensures smooth batch processing without hitting API limits.
+Important: Each JSON file must include the DynamoDB table name where the records will be inserted. The RequestItems key should contain the table name, and the list of items to be inserted should follow.
+
+Replace <YourTableName> with the actual DynamoDB table name.
+The PutRequest specifies the operation (insert).
+Item contains the key-value pairs for the data to be inserted.
+
+3# Upload Records Using AWS CLI:
+
+Ensure that you have added your DynamoDB table name instead of the placeholder <YOUR_TABLE_NAME> in each of the four available records.json files.
+Open your terminal or command prompt.
+Ensure the AWS CLI is configured with appropriate credentials and permissions to access DynamoDB.
+
+How to configure AWS CLI?
+Install AWS CLI:
+
+The AWS CLI is used to interact with various AWS services from the command line. To install AWS CLI :
+Open your terminal or command prompt.
+Run the command appropriate for your operating system to install the AWS CLI.
+#For Windows:
+msiexec.exe /i <https://awscli.amazonaws.com/AWSCLIV2.msi>
+#For macOS (using Homebrew):
+brew install awscli
+#For Linux (using package manager):
+sudo apt-get install awscli
+To check if the AWS CLI (Command Line Interface) was installed successfully on your system,
+you can run the following command in your terminal or command prompt:
+
+aws --version
+(Remember to restart your terminal if it is giving not installed error)
+
+You have successfully installed the CLI . We need to configure the CLI with the appropriate user keys to get started with using AWS services.
+
+Configure AWS CLI :
+To configure your AWS CLI, run the following command in your terminal:
+
+aws configure
+
+Running this command will ask for a access key and secret access key.
+What are these?
+To access your AWS account from CLI, you need to set up a user account associated with it and these keys are used for the authentication
+for accessing the AWS services.
+Login to your AWS Management console and search for IAM in the search bar.
+Navigate to Users and click on Create User.
+Give an appropriate user name and click Next.
+
+For the Permission options, choose the option ‘Attach policies directly’ and attach the ‘AdministratorAccess’ policy.
+(Be careful while using the Administrator Access policy as we get the full access to the AWS services and is generally not recommended if the
+user will be accessed by someone else).
+
+Click on Next and Create User.
+Navigate to the user you created, and click on create Access key under the Access Keys option.
+
+Choose the Command Line Interface(CLI) as the use case, check the confirmation box and click Next.
+Provide a suitable description about purpose of the Access key and Create Access Key.
+You will be provided with an Access key and a Secret Access Key. These keys can be used to access your AWS services so make sure
+these are kept confidential.
+Go back to your terminal or command prompt and paste the keys that you just generated.
+Choose the region (Make sure the CLI default region and the S3 bucket region are the same)
+The general flow of the command line would look like :
+
+Run the following commands to upload the records to DynamoDB in batches with the terminal present in the root directory of your project:
+
+aws dynamodb batch-write-item --request-items file://records-1.json
+aws dynamodb batch-write-item --request-items file://records-2.json
+aws dynamodb batch-write-item --request-items file://records-3.json
+aws dynamodb batch-write-item --request-items file://records-4.json
+
+What Happens Here?
+Each command uploads up to 25 records from the specified file to DynamoDB.
+If any items fail to upload (e.g., due to constraints or errors), DynamoDB returns these unprocessed items for further action.
+
+4# Verify the Records in the Table:
+
+Return to the DynamoDB dashboard in the AWS Console.
+Select the CloudDefinitions table from the list.
+Navigate to the Items tab to view all uploaded records.
+
+Confirm that all terms and definitions are present and correctly populated. 
+This concludes the DynamoDB configuration steps.
