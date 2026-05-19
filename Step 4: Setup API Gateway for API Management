@@ -10,3 +10,78 @@ Steps to be Performed:
 #1 Create a REST API in API Gateway:
 
 Navigate to the API Gateway Console
+Create a New REST API:
+Click on Create API.
+Choose REST API.
+Click Build under REST API.
+
+Configure the API:
+Enter a name for your API (e.g., CloudDictionaryAPIGateway).
+Choose Create API.
+
+
+#2 Integrate Lambda with API Gateway using Lambda Proxy Integration:
+
+Add an Integration:
+After the API is created, click on Create Resource.
+Name the resource as /get-definition, which will handle fetching the definition of terms.
+Under Resource Path, enter get-definition.
+
+Make sure that the resource name is /get-definition only, since the frontend code is configured to handle the following resource name.
+Create a Method for the Resource:
+Select the /get-definition resource.
+Click on Create Method.
+
+Select GET from the dropdown.
+In the Integration Type dropdown, select Lambda Function.
+Check the option for Use Lambda Proxy integration. This allows API Gateway to forward the entire request to the Lambda function, including headers, query parameters, and body.
+Choose the region where your Lambda function is located.
+In the Lambda Function field, search for and select your Lambda function (e.g., FetchTermFromDynamoDB).
+Click on Create Method.
+
+#3 Enable CORS (Cross-Origin Resource Sharing):
+
+To ensure that your React front-end can make requests to the API, you need to enable CORS for this API.
+Enable CORS:
+Go to the /get-definition resource and select Enable CORS.
+Check the options Gateway responses and Access-Control-Allow-Methods as given below. Click on Save. 
+
+#4 Deploy the API:
+
+Click on Deploy API.
+In the stage dropdown, click on New Stage and enter the stage name (eg: dev) Click on Deploy. 
+Obtain the API URL - After deployment, you’ll see a Invoke URL (e.g., https://htbc5ljxl6.execute-api.ap-south-1.amazonaws.com/dev).
+
+#5 Integrate API Gateway with Your React Application and Test:
+
+Now that your API is set up, you'll need to connect it with your React front-end. This will allow users to search for terms and get their definitions from the API.
+Update the API URL in App.js:
+Open your React application and navigate to the App.js file.
+In the apiUrl variable, replace the placeholder URL with your API Gateway URL:
+javascript
+const apiUrl = '<ENTER YOUR API_URL>'; // Replace with your API Gateway URL
+
+
+#6 Push Changes to GitHub:
+
+1. Commit the Changes:
+
+After making the changes to your App.js file, commit the updates. In the terminal, add the commands:
+python
+git add .
+git commit -m "Integrate API Gateway with React front-end"
+
+2. Push the Changes:
+
+Push the changes to your GitHub repository.
+python
+git push origin main
+This will update your GitHub repository with the changes you made to integrate the API Gateway with your React application.
+Once the changes are pushed to GitHub, AWS Amplify automatically detects the changes and triggers a new deployment.
+This may take a few minutes depending on the size of your application.
+You can monitor the deployment status in the Amplify Console under the Deployments section.
+Test the application. Type any term that was available in the DynamoDB table. For eg: AWS KMS
+
+You can now try searching for terms.
+You will only be able to search for terms that are present in your DynamoDB table or the ones you inserted from records.json.
+These terms are case and space sensitive so you will need to make sure you search for the exact term.
