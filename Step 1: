@@ -1,0 +1,62 @@
+Steps to be Performed:
+
+1- Clone the React Application from GitHub
+2- Install dependencies
+3- Create your own GitHub repository
+4- Push the Code to your new repository
+5- Deploy the application on AWS Amplify
+
+#1 Clone the React Application from GitHub:
+Open a terminal and clone the repository to your local machine using the following command:
+
+git clone https://github.com/techwithlucy/ztc-projects-intermediate.git
+
+Navigate to the project directory:
+
+cd projects
+cd intermediate
+cd project4
+
+#2 Install Dependencies:
+Install the required dependencies for the React app by running the below commands in the terminal:
+python
+npm install
+npm start
+Check if the React application is running locally by checking: http://localhost:3000 on the browser. 
+
+#3 Create Your Own GitHub Repository:
+
+Log in to GitHub and create a new repository.
+Provide a repository name, such as serverless-cloud-dictionary.
+(Optional) Add a description, such as "Serverless Cloud Dictionary Application Frontend."
+Do not initialize the repository with a README or .gitignore.
+Click Create repository.
+﻿
+#4 Push the Code to Your New Repository:
+In the project directory, set up Git to push your local code to the new GitHub repository:
+
+git init
+git add .
+git commit -m "Initial commit"
+git remote remove origin
+git remote add origin <your-new-repository-url>
+git branch -M main
+git push -u origin main
+git init: Initializes a Git repository in the project folder.
+git add .: Stages all project files for commit.
+git commit -m "Initial commit": Commits the staged files.
+git remote add origin <your-new-repository-url>: #Links the local repository to your new GitHub repository.
+git push -u origin main: Pushes the code to the main branch of the new repository.
+
+#5 Deploy the Application to AWS Amplify:
+
+Log in to the AWS Management Console and navigate to AWS Amplify.
+Click on Deploy an App.
+Select GitHub as the source and authenticate if prompted.
+Choose your new repository and the branch (usually main).
+AWS Amplify will automatically detect the React application and configure the build settings. Review and confirm the configuration, then click Save and Deploy.
+Wait for Amplify to complete the build and deployment process.
+After deployment, Amplify will provide a URL (e.g., https://your-app-name.amplifyapp.com).
+Open the URL in a browser to confirm the React application is live and functioning.
+
+This completes the first step of setting up the frontend and hosting it on AWS Amplify.
