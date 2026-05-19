@@ -6,7 +6,117 @@ Steps to be Performed:
 2- Prepare the Lambda code
 3- Test the Lambda Function
 
-#1 Create an IAM Role for Lambda
-Before creating a Lambda function, it's important to ensure that it has the necessary permissions to access DynamoDB, where your terms and definitions are stored.
+#1 Create an IAM Role for Lambda:
 
+Before creating a Lambda function, it's important to ensure that it has the necessary permissions to access DynamoDB, where your terms and definitions are stored.
 Go to the IAM console and select Roles.
+Click on Create role.
+Choose Lambda as the use case. This means the role will be assigned to a Lambda function. Click Next.
+Attach the AmazonDynamoDBReadOnlyAccess policy and AWSLambdaBasicExecutionRole policy to this role.
+This gives your Lambda function permission to only read data from DynamoDB and the basic Lambda execution permissions.
+After attaching the policy, name your role (e.g., LambdaDynamoDBAccessRole) and create it.
+This IAM role will allow your Lambda function to fetch data from the DynamoDB table.
+
+#2 Prepare the Lambda Code:
+
+The next step is to write the Lambda function that will query the DynamoDB table and fetch the term's definition based on a search parameter.
+Go to the AWS Lambda Console and click on Create Function.
+Choose Author from scratch, give your function a name (e.g., FetchTermFromDynamoDB), and select Python 3.12 as the runtime.
+In the Execution Role section, choose the IAM role you just created (LambdaDynamoDBAccessRole). Click Create Function. 
+Now, let’s add the code that will run in your Lambda function:
+
+#------->
+python
+import json
+import boto3
+
+# Create a DynamoDB client
+dynamodb = boto3.client('dynamodb')
+
+# Your DynamoDB table name
+table_name = '<ADD_DYNAMODB_TABLE_NAME_HERE>'
+
+def lambda_handler(event, context):
+    # Get the term from the query string parameters
+    term = event['queryStringParameters']['term']
+
+    # Query the DynamoDB table for the term
+    response = dynamodb.get_item(
+        TableName=table_name,
+        Key={
+            'term': {
+                'S': term
+            }
+        }
+    )
+
+    # Check if the term exists in the table
+    if 'Item' in response:
+        definition = response['Item']['definition']['S']
+        return {
+            'statusCode': 200,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',  # Allow all origins or specify a specific origin
+                'Access-Control-Allow-Methods': 'OPTIONS,GET',  # Allowed methods
+                'Access-Control-Allow-Headers': 'Content-Type',  # Allow necessary headers
+            },
+            'body': json.dumps({
+                'term': term,
+                'definition': definition
+            })
+        }
+    else:
+        return {
+            'statusCode': 404,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',  # Allow all origins or specify a specific origin
+                'Access-Control-Allow-Methods': 'OPTIONS,GET',  # Allowed methods
+                'Access-Control-Allow-Headers': 'Content-Type',  # Allow necessary headers
+            },
+            'body': json.dumps({
+                'message': 'Term not found'
+            })
+        }
+Replace <ADD_DYNAMODB_TABLE_NAME_HERE> with your actual DynamoDB table name.
+#------->
+
+
+Explanation of the Code:
+
+Import Libraries:
+We import json to handle JSON data and boto3, which is the AWS SDK for Python, used to interact with AWS services like DynamoDB.
+Create a DynamoDB Client:
+We use boto3.client('dynamodb') to create a connection to DynamoDB. This client will allow us to interact with the DynamoDB service.
+Set the DynamoDB Table Name:
+table_name = 'CloudDictionary' defines the name of your DynamoDB table where the terms and definitions are stored.
+Lambda Handler Function:
+The main logic of the Lambda function is inside the lambda_handler function. This is the entry point that AWS Lambda invokes when your function is called.
+Extract the Query Parameter:
+The event['queryStringParameters']['term'] line retrieves the term from the query string passed to the Lambda function. For example, if the query string is ?term=CloudComputing, it will fetch "CloudComputing".
+Query DynamoDB:
+dynamodb.get_item() is used to query DynamoDB for the item where the key (in this case, term) matches the value we received in the query string.
+We pass the term as the key to the get_item function, which looks up that term in the table and retrieves the associated data (the term's definition).
+Check if Term Exists:
+If DynamoDB returns an item ('Item' in response), the function extracts the definition from the returned data and sends it back as a response with a 200 status code.
+If no item is found (i.e., the term doesn't exist in DynamoDB), the function returns a 404 status code along with a message saying "Term not found".
+Return the Response:
+The function returns the term and its definition as a JSON response.
+The headers part of the response allows cross-origin requests (useful when the Lambda function is accessed via a web browser), and the body contains the data being returned.
+
+#3 Test the Lambda Function:
+
+To ensure that your Lambda function works correctly, you need to test it:
+Deploy the Lambda function.
+Click on Test at the top.
+Create a test event by clicking on Configure test event. Use the following JSON structure to simulate a query string parameter for the term:
+
+{
+  "queryStringParameters": {
+    "term": "AWS KMS"
+  }
+}
+
+Click Save changes and then Test. This will trigger your Lambda function with the test input.
+You should see an execution result showing the response from DynamoDB, which will either include the term and its definition (if found) or a 404 error message.
